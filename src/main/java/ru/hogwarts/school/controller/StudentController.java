@@ -24,7 +24,7 @@ public class StudentController {
         return ResponseEntity.ok(createdStudent);
     }
 
-    @GetMapping("/findID")
+    @GetMapping("/findID/{id}")
     public ResponseEntity<Student> getStudentInfo(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         if (student == null) {
@@ -35,15 +35,15 @@ public class StudentController {
 
     @PutMapping("/update")
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        Student updateStudent = studentService.updateStudent(student.getId(), student);
+        Student updateStudent = studentService.updateStudent(student);
         if (updateStudent == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(student);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
