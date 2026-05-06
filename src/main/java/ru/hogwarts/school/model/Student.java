@@ -1,6 +1,8 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import ru.hogwarts.school.service.AvatarService;
 
 import java.util.Objects;
 
@@ -14,7 +16,11 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
+    @JsonIgnore
     private Faculty faculty;
+    @OneToOne (mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Avatar avatar;
+
 
     public Student() {
     }
@@ -75,5 +81,13 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 }
