@@ -110,7 +110,7 @@ class FacultyControllerWebMvcTest {
         mockMvc.perform(get("/faculty/getAllFaculty"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Гриффиндор"));
+                .andExpect(jsonPath("$[0].name").value("Грифиндор"));
 
         verify(facultyService, times(1)).getAllFaculty();
     }
