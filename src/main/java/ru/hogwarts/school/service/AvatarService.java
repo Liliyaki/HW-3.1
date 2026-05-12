@@ -1,9 +1,10 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
-
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
@@ -19,7 +20,7 @@ import java.nio.file.Paths;
 @Service
 @Transactional
 public class AvatarService {
-    @Value("avatar")
+    @Value("${avatars.derictories.path}")
     private String avatarsDir;
     private final StudentRepository studentRepository;
     private final AvatarRepository avatarRepository;
@@ -69,5 +70,9 @@ public class AvatarService {
 
         Path filePath = Paths.get(avatar.getFilePath());
         return Files.readAllBytes(filePath);
+    }
+    public Page<Avatar> getAllAvatars(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return avatarRepository.findAll(pageable);
     }
 }

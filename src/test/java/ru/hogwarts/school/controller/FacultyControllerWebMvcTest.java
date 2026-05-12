@@ -36,7 +36,7 @@ class FacultyControllerWebMvcTest {
 
     @BeforeEach
     void setUp() {
-        testFaculty = new Faculty("Гриффиндор", "Красный");
+        testFaculty = new Faculty("Красный", "Гриффиндор");
         testFaculty.setId(1L);
     }
 
@@ -110,7 +110,7 @@ class FacultyControllerWebMvcTest {
         mockMvc.perform(get("/faculty/getAllFaculty"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Грифиндор"));
+                .andExpect(jsonPath("$[0].name").value("Гриффиндор"));
 
         verify(facultyService, times(1)).getAllFaculty();
     }

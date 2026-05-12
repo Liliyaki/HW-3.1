@@ -19,12 +19,6 @@ public class Avatar {
     private Student student;
 
     public Avatar() {
-        this.mediaType = mediaType;
-        this.id = id;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
-        this.data = data;
-        this.student = student;
     }
 
     public Long getId() {

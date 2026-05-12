@@ -34,7 +34,7 @@ class FacultyControllerTestRestTemplateTest {
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port + "/faculty";
-        testFaculty = new Faculty("Гриффиндор", "Красный");
+        testFaculty = new Faculty("Красный", "Гриффиндор");
         testFaculty = facultyRepository.save(testFaculty);
     }
 
