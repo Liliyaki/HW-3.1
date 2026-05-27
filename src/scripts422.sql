@@ -1,0 +1,21 @@
+CREATE TABLE person (
+id SERIAL,
+name VARCHAR(150) NOT NULL,
+age INTEGER CHECK (age > 0),
+driver_license BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE car (
+id SERIAL,
+brand VARCHAR (150) NOT NULL,
+model VARCHAR (150) NOT NULL,
+price INTEGER CHECK (price > 0)
+);
+
+CREATE TABLE person_car (
+person_id BIGINT NOT NULL,
+car_id BIGINT NOT NULL,
+PRIMARY KEY (person_id, car_id),
+FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE CASCADE,
+FOREIGN KEY (car_id) REFERENCES car(id) ON DELETE CASCADE
+);
