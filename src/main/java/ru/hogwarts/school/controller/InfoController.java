@@ -16,7 +16,7 @@ public class InfoController {
         return port;
     }
     @GetMapping("/sum-optimized")
-    public long getSumOptimized() {
+    public long SumOptimized() {
 
         long startTime = System.currentTimeMillis();
 
