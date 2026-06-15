@@ -78,41 +78,48 @@ public class StudentController {
 
     @GetMapping("/filterStudentBetweenAge")
     public ResponseEntity<Collection<Student>> findStudentBetweenAge(@RequestParam(required = false) int minAge, int maxAge) {
-        return ResponseEntity.ok(studentService.findByAge(minAge,maxAge)) ;
+        return ResponseEntity.ok(studentService.findByAge(minAge, maxAge));
     }
-    @GetMapping ("/{studentId}/faculty")
-    public ResponseEntity <Faculty> getStudentFaculty (@PathVariable Long studentId) {
+
+    @GetMapping("/{studentId}/faculty")
+    public ResponseEntity<Faculty> getStudentFaculty(@PathVariable Long studentId) {
         Faculty faculty = studentService.getStudentByFaculty(studentId);
         if (faculty == null) {
             ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(faculty);
     }
-    @GetMapping ("/count")
-    public  ResponseEntity <Long> getTotalStudentCount() {
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalStudentCount() {
         long count = studentService.getTotalStudentCount();
         return ResponseEntity.ok(count);
     }
-    @GetMapping ("/average-age")
-    public ResponseEntity <Double> getAverageStudentAge() {
+
+    @GetMapping("/average-age")
+    public ResponseEntity<Double> getAverageStudentAge() {
         double averageAge = studentService.getAverageStudentAge();
         return ResponseEntity.ok(averageAge);
     }
-    @GetMapping ("/last-five")
-    public ResponseEntity <List <Student>> getLastFiveStudent () {
+
+    @GetMapping("/last-five")
+    public ResponseEntity<List<Student>> getLastFiveStudent() {
         List<Student> lastFive = studentService.getFiveLastStudent();
         return ResponseEntity.ok(lastFive);
     }
-    @GetMapping ("/name-starting-a")
+
+    @GetMapping("/name-starting-a")
     public ResponseEntity<List<String>> getStudentNamesStartingWithA() {
         List<String> names = studentService.getStudentNamesStartingWithA();
         return ResponseEntity.ok(names);
     }
-    @GetMapping ("/average-all-students-age")
+
+    @GetMapping("/average-all-students-age")
     public ResponseEntity<Double> getAverageAllStudentsAge() {
         double average = studentService.getAverageAllStudentsAge();
         return ResponseEntity.ok(average);
     }
+
     @GetMapping("/sum-slow")
     public int getSumSlow() {
 
@@ -125,5 +132,80 @@ public class StudentController {
         long endTime = System.currentTimeMillis();
 
         return sum;
+    }
+
+    @GetMapping("/print-parallel")
+    public ResponseEntity<String> printStudentsParallel() {
+        List<Student> students = studentService.getAllStudent().stream()
+                .limit(6)
+                .collect(Collectors.toList());
+
+        if (students.size() < 6) {
+            return ResponseEntity.ok("Недостаточно студентов для вывода (нужно 6, есть " + students.size() + ")");
+        }
+
+
+        System.out.println("=== Основной поток (main) ===");
+        System.out.println(Thread.currentThread().getName() + ": " + students.get(0).getName());
+        System.out.println(Thread.currentThread().getName() + ": " + students.get(1).getName());
+
+
+        Thread thread1 = new Thread(() -> {
+            System.out.println("=== Поток 1 ===");
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(2).getName());
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(3).getName());
+        });
+        thread1.start();
+
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println("=== Поток 2 ===");
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(4).getName());
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(5).getName());
+        });
+        thread2.start();
+
+        return ResponseEntity.ok("Имена студентов выводятся в консоль");
+    }
+
+    private synchronized void printNameSynchronized(String name) {
+        System.out.println(Thread.currentThread().getName() + ": " + name);
+    }
+
+
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<String> printStudentsSynchronized() {
+
+
+        List<Student> students = studentService.getAllStudent().stream()
+                .limit(6)
+                .collect(Collectors.toList());
+
+        if (students.size() < 6) {
+            return ResponseEntity.ok("Недостаточно студентов для вывода (нужно 6, есть " + students.size() + ")");
+        }
+
+
+        System.out.println("=== Основной поток (main) ===");
+        printNameSynchronized(students.get(0).getName());
+        printNameSynchronized(students.get(1).getName());
+
+
+        Thread thread1 = new Thread(() -> {
+            System.out.println("=== Поток 1 ===");
+            printNameSynchronized(students.get(2).getName());
+            printNameSynchronized(students.get(3).getName());
+        });
+        thread1.start();
+
+
+        Thread thread2 = new Thread(() -> {
+            System.out.println("=== Поток 2 ===");
+            printNameSynchronized(students.get(4).getName());
+            printNameSynchronized(students.get(5).getName());
+        });
+        thread2.start();
+
+        return ResponseEntity.ok("Имена студентов выводятся в консоль с синхронизацией");
     }
 }
